@@ -1,72 +1,85 @@
- package com.reyad.psycheadminpanel.main.student
+package com.reyad.psycheadminpanel.main.student
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.view.View
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.reyad.psycheadminpanel.R
+import com.reyad.psycheadminpanel.databinding.ActivityStudentViewBinding
 
 
 class StudentView : AppCompatActivity() {
 
-    lateinit var recyclerView: RecyclerView
+    lateinit var binding: ActivityStudentViewBinding
 
-    var year: String? = null
+    var batch: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_student_view)
+        binding = ActivityStudentViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // hooks
-        recyclerView = findViewById(R.id.recycle_student_details)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true)
+        // get batch
+        batch = intent.getStringExtra("batch")
+        Log.i("studentView", "batch: $batch")
+        binding.tvBatchStudentView.text = batch
 
-        // get share preference value
-        val sharedPreferences =
-            applicationContext?.getSharedPreferences("login", Context.MODE_PRIVATE)
-        year = sharedPreferences?.getString("year", "")
+        //
+        loadStudentList()
 
-        val db = FirebaseDatabase.getInstance().reference
-        val ref = db.child("Student").child(year.toString())
-//        val ref = db.child("Student").child("Batch 14")
+        //
+        binding.fabStudentView.setOnClickListener {
+            val intent = Intent(this, StudentActivity::class.java).apply {
+                putExtra("batch",batch.toString())
+            }
+            startActivity(intent)
+        }
+    }
+
+    //
+    private fun loadStudentList() {
+        binding.progressBarStudentView.visibility = View.VISIBLE
+
+        val db = FirebaseDatabase.getInstance().getReference("Students")
+        val ref = db.child(batch.toString()).orderByChild("priority")
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                val mList = ArrayList<StudentItem>()
+                val mList = ArrayList<StudentItems>()
 
-                snapshot.children.forEach { dataSnapshot ->
-                    val studentData = dataSnapshot.getValue(StudentItem::class.java)
-                    Log.i("student", dataSnapshot.toString())
-                    
-                    mList.add(studentData!!)
-                    val mAdapter = StudentAdapter(this@StudentView, mList, year.toString() )
-                    recyclerView.adapter =mAdapter
+                if (snapshot.exists()) {
+                    snapshot.children.forEach { dataSnapshot ->
+                        val studentData = dataSnapshot.getValue(StudentItems::class.java)
+                        Log.i("studentView", dataSnapshot.toString())
+
+                        mList.add(studentData!!)
+                        val mAdapter = StudentAdapter(this@StudentView, mList, batch.toString())
+                        binding.recycleStudentDetails.setHasFixedSize(true)
+                        binding.recycleStudentDetails.adapter = mAdapter
+
+                        binding.progressBarStudentView.visibility = View.GONE
+
+                    }
+                } else {
+                    binding.progressBarStudentView.visibility = View.GONE
+                    binding.tvNoDataStudentView.visibility = View.VISIBLE
 
                 }
+
 
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.i("studentView", error.message)
+                binding.progressBarStudentView.visibility = View.INVISIBLE
             }
 
         })
-
-        val fab = findViewById<FloatingActionButton>(R.id.fab_student)
-        fab.setOnClickListener {
-            val intent = Intent(this, StudentActivity::class.java)
-            startActivity(intent)
-        }
-
     }
+
 }

@@ -2,94 +2,87 @@ package com.reyad.psycheadminpanel.main.student
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.reyad.psycheadminpanel.R
 import com.reyad.psycheadminpanel.databinding.ActivityStudentUpdateBinding
+import com.squareup.picasso.Picasso
+import com.theartofdev.edmodo.cropper.CropImage
 import java.util.*
 
 class StudentUpdate : AppCompatActivity() {
 
     lateinit var binding: ActivityStudentUpdateBinding
     private var selectedImageUri: Uri? = null
-
-    private lateinit var year: String
-    private lateinit var name: String
-    private lateinit var id: String
-    private lateinit var mobile: String
-    private lateinit var profileImg: String
-
-    private lateinit var progressBar: ProgressBar
-
+    private lateinit var progressDialog : ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStudentUpdateBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        year = intent.getStringExtra("year").toString()
-        name = intent.getStringExtra("name").toString()
-        id = intent.getStringExtra("id").toString()
-        mobile = intent.getStringExtra("mobile").toString()
-        profileImg = intent.getStringExtra("profileImg").toString()
+        val batch = intent.getStringExtra("batch").toString()
+        val name = intent.getStringExtra("name").toString()
+        val id = intent.getStringExtra("id").toString()
+        val mobile = intent.getStringExtra("mobile").toString()
+        val profileImg = intent.getStringExtra("profileImg").toString()
+        Log.i("studentUpdate", "$batch ->> $id ->> $name")
 
-        progressBar = binding.progressBar
 
         // edit
-        binding.apply {
-            //
-            etContentName.setText(name)
-            etContentMobile.setText(mobile)
-
-            //view image
-            ivContentProfile.load(profileImg) {
-                crossfade(true)
-                placeholder(R.drawable.placeholder)
-                transformations(CircleCropTransformation())
-            }
-
-            //
-            binding.ivContentProfile.setOnClickListener {
-                openGallery()
-            }
-
-            //
-            binding.buttonContentUpdate.setOnClickListener {
-                val map: MutableMap<String, Any> = HashMap()
-                map["name"] = binding.etContentName.text.toString()
-                map["mobile"] = binding.etContentMobile.text.toString()
-
-                FirebaseDatabase.getInstance().reference
-                    .child("Student")
-                    .child(year)
-                    .child(id)
-                    .updateChildren(map)
-                    .addOnCompleteListener {
-                        Log.i("studentDetails", "update")
-
-                        val intent =
-                            Intent(this@StudentUpdate, StudentView::class.java)
-                        startActivity(intent)
-                    }
-
-                if (selectedImageUri != null) {
-                    uploadFileToFirebaseStorage(year, id)
-                }
-            }
+        binding.etContentName.setText(name)
+        binding.etContentMobile.setText(mobile)
+        if (profileImg.isNotEmpty()) {
+            Picasso.get().load(profileImg).placeholder(R.drawable.placeholder)
+                .into(binding.ivProfileStudentUpdate)
         }
 
+        //
+        binding.buttonContentUpdate.setOnClickListener {
+            binding.progressBarStudentUpdate.visibility = View.VISIBLE
+
+            val map: MutableMap<String, Any> = HashMap()
+            map["name"] = binding.etContentName.text.toString()
+            map["mobile"] = binding.etContentMobile.text.toString()
+
+            FirebaseDatabase.getInstance().reference
+                .child("Students")
+                .child(batch).child(id)
+                .updateChildren(map)
+                .addOnCompleteListener {
+                    Log.i("studentUpdate", "update name, mobile")
+
+                    binding.progressBarStudentUpdate.visibility = View.INVISIBLE
+
+                    Toast.makeText(this, "Profile update successfully 😍", Toast.LENGTH_LONG).show()
+
+//                    val intent = Intent(this@StudentUpdate, StudentView::class.java).apply {
+//                        putExtra("batch", batch)
+//                    }
+//                    startActivity(intent)
+//                    finish()
+                }.addOnFailureListener {
+                    binding.progressBarStudentUpdate.visibility = View.INVISIBLE
+                    Toast.makeText(this, "error: ${it.message}", Toast.LENGTH_SHORT).show()
+                }
+
+        }
+
+        //
+        binding.ivProfileStudentUpdate.setOnClickListener {
+            openGallery()
+        }
     }
 
+    //
     private fun openGallery() {
         Intent(Intent.ACTION_GET_CONTENT).also { intent ->
             intent.type = "image/*"
@@ -108,76 +101,94 @@ class StudentUpdate : AppCompatActivity() {
         if (requestCode == REQUEST_SELECT_IMAGE && resultCode == Activity.RESULT_OK) {
             data?.data?.let { uri ->
                 selectedImageUri = uri
-                Log.i("studentDetails", "image uri: $selectedImageUri")
-            }
-            // show file name
-            binding.ivContentProfile.load(selectedImageUri) {
-                crossfade(true)
-                placeholder(R.drawable.no_image_selected)
-                transformations(CircleCropTransformation())
-            }
+                Log.i("studentUpdate", "image uri: $selectedImageUri")
 
-        } else {
-            Toast.makeText(applicationContext, "Please select an Image", Toast.LENGTH_SHORT).show()
+                CropImage.activity(selectedImageUri)
+                    .setAspectRatio(1, 1)
+                    .start(this)
+
+
+            }
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (resultCode == RESULT_OK) {
+                selectedImageUri = result.uri
+
+                progressDialog = ProgressDialog(this)
+                progressDialog.setTitle("Uploading Image...")
+                progressDialog.setMessage("Please wait some time")
+                progressDialog.setCanceledOnTouchOutside(false)
+                progressDialog.show()
+
+                //
+                imageUploadToStorage()
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                val error = result.error
+            }
         }
     }
 
-    private fun uploadFileToFirebaseStorage(year: String, id: String) {
-//        if (!validCode() || !validShort() ||!validLesson()){
-//            return
-//        }
-        progressBar.visibility = View.VISIBLE
+    //
+    private fun imageUploadToStorage() {
+        val batch = intent.getStringExtra("batch").toString()
+        val id = intent.getStringExtra("id").toString()
 
         val db = FirebaseStorage.getInstance().reference
-        val ref = db.child("Student")
-            .child(year)
-            .child(id)
+        val ref = db.child("Students")
+            .child(batch).child("$id.jpg")
 
-//        mUploadTask = selectedImageUri?.let { it ->
         selectedImageUri?.let { it ->
             ref.putFile(it)
-                .addOnSuccessListener { it ->
+                .addOnSuccessListener {
+                    Log.d("studentUpdate", "image upload successfully")
 
-                    Handler().postDelayed({
-                        progressBar.progress = 0
-                    }, 500)
-
-                    Log.d("student", "image upload successfully")
-
-                    ref.downloadUrl.addOnSuccessListener { uri ->
-
-                        val map: MutableMap<String, Any> = HashMap()
-                        map["imageUrl"] = uri.toString()
-
-                        FirebaseDatabase.getInstance().reference
-                            .child("Student")
-                            .child(year)
-                            .child(id)
-                            .updateChildren(map)
-                            .addOnCompleteListener {
-                                Log.i("studentDetails", "update img")
-                                progressBar.visibility = View.INVISIBLE
-                            }
-
-                        Log.d("student", "Image url: $uri")
+                    ref.downloadUrl.addOnSuccessListener { downloadUri ->
+                        //
+                        uploadToFirebase(downloadUri.toString(), batch, id)
+                        Log.d("studentUpdate", "Image url: $downloadUri")
                     }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(
-                        this,
-                        "Storage failed: ${it.message.toString()}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Log.i("student", "Storage failed: ${it.message.toString()}")
-                    progressBar.visibility = View.INVISIBLE
-                }
-                .addOnProgressListener { taskSnapshot ->
-                    val currentProgress =
-                        100 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount
-                    progressBar.progress = currentProgress.toInt()
+                    Toast.makeText(this, "Storage failed: ${it.message.toString()}",
+                        Toast.LENGTH_SHORT).show()
+                    Log.i("studentUpdate", "Storage failed: ${it.message.toString()}")
+                    progressDialog.dismiss()
                 }
         }
     }
 
+    //
+    private fun uploadToFirebase(downloadUri: String, batch: String, id: String) {
 
+        val map: MutableMap<String, Any> = HashMap()
+        map["imageUrl"] = downloadUri
+
+        FirebaseDatabase.getInstance().reference
+            .child("Students")
+            .child(batch).child(id)
+            .updateChildren(map)
+            .addOnCompleteListener {
+                Log.i("studentUpdate", "update imageUrl")
+
+                progressDialog.dismiss()
+
+                Toast.makeText(this, "Profile Image update successfully 😍", Toast.LENGTH_LONG).show()
+
+                val intent = Intent(this@StudentUpdate, StudentView::class.java).apply {
+                    putExtra("batch", batch)
+                }
+                startActivity(intent)
+                finish()
+            }.addOnFailureListener {
+                progressDialog.dismiss()
+                Toast.makeText(this, "error: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+
+    }
 }
+
+
+

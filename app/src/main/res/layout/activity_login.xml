@@ -9,27 +9,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:orientation="vertical"
         android:paddingStart="16dp"
         android:paddingEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ProgressBar
+            android:id="@+id/progressBar_login"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_admin_course_code"
+            android:id="@+id/til_batch_login"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:hint="Year"
+            android:hint="Batch"
             app:errorEnabled="true">
 
             <AutoCompleteTextView
-                android:id="@+id/ac_login_year"
+                android:id="@+id/ac_batch_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:completionThreshold="1"
@@ -37,24 +44,24 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_login_admin"
+            android:id="@+id/til_user_login"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Admin"
+            android:hint="User"
             android:paddingEnd="8dp"
             app:endIconMode="clear_text"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_login_admin"
+                android:id="@+id/et_user_login"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_login_password"
+            android:id="@+id/til_password_login"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,16 +72,17 @@
             tools:ignore="RtlSymmetry">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_login_password"
+                android:id="@+id/et_password_login"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btn_login"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_login_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:text="Login" />
 
     </LinearLayout>
