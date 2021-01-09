@@ -1,5 +1,6 @@
 package com.reyad.psycheadminpanel.main.student
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -8,18 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.reyad.psycheadminpanel.R
+import com.squareup.picasso.Picasso
 import java.util.*
 
 
 class StudentAdapter(
     val context: Context,
-    private val items: List<StudentItem>,
-    private val year: String,
+    private val items: List<StudentItems>,
+    private val batch: String,
 
     ) :
     RecyclerView.Adapter<StudentAdapter.MyViewHolder>() {
@@ -31,29 +31,30 @@ class StudentAdapter(
     }
 
     //on binding
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val mListPosition = items[position]
         holder.textViewName.text = mListPosition.name.split(' ')
             .joinToString(" ") { it.capitalize(Locale.ROOT) }
 
-        holder.textViewId.text = mListPosition.id
-        holder.textViewMobile.text = mListPosition.mobile
+        holder.textViewId.text = "Id: ${ mListPosition.id }"
+        holder.textViewMobile.text = "Mobile: ${mListPosition.mobile}"
 
-        // view image
-        holder.imageViewProfile.load(mListPosition.imageUrl) {
-            crossfade(true)
-            placeholder(R.drawable.placeholder)
-            transformations(CircleCropTransformation())
+        if (mListPosition.imageUrl.isNotEmpty()) {
+            Picasso.get().load(mListPosition.imageUrl)
+                .placeholder(R.drawable.placeholder)
+                .into(holder.imageViewProfile)
         }
 
         // edit image view
         holder.imageViewEdit.setOnClickListener {
-            val intent = Intent(context, StudentUpdate::class.java)
-            intent.putExtra("year", year)
-            intent.putExtra("name", mListPosition.name)
-            intent.putExtra("id", mListPosition.id)
-            intent.putExtra("mobile", mListPosition.mobile)
-            intent.putExtra("profileImg", mListPosition.imageUrl)
+            val intent = Intent(context, StudentUpdate::class.java).apply {
+                putExtra("batch", batch)
+                putExtra("name", mListPosition.name)
+                putExtra("id", mListPosition.id)
+                putExtra("mobile", mListPosition.mobile)
+                putExtra("profileImg", mListPosition.imageUrl)
+            }
             context.startActivity(intent)
         }
 
@@ -66,13 +67,13 @@ class StudentAdapter(
             builder.setPositiveButton("Yes") { dialog, which ->
                 // remove realtime database data
                 FirebaseDatabase.getInstance().getReference("Student")
-                    .child(year)
+                    .child(batch)
                     .child(mListPosition.id)
                     .removeValue()
 
                 //remove fireStorage data
                 FirebaseStorage.getInstance().getReference("Student")
-                    .child(year)
+                    .child(batch)
                     .child(mListPosition.id)
                     .delete()
 

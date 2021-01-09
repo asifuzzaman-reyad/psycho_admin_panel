@@ -18,41 +18,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_study_course_code"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Course code"
-            app:errorEnabled="true">
+            android:orientation="horizontal">
 
-            <AutoCompleteTextView
-                android:id="@+id/ac_study_course_code"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_course_code_study"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:completionThreshold="1"
-                android:inputType="none" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Course code"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                app:errorEnabled="true">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_study_course_topic"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Select Topic"
-            app:errorEnabled="true">
+                <AutoCompleteTextView
+                    android:id="@+id/ac_course_code_study"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="1"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <AutoCompleteTextView
-                android:id="@+id/ac_study_course_topic"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_course_topic_study"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:completionThreshold="1"
-                android:inputType="none" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Select Topic"
+                android:layout_weight="1"
+                app:errorEnabled="true">
+
+                <AutoCompleteTextView
+                    android:id="@+id/ac_course_topic_study"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="1"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_study_course_teacher"
+            android:id="@+id/til_course_teacher_study"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,21 +70,89 @@
             app:errorEnabled="true">
 
             <AutoCompleteTextView
-                android:id="@+id/ac_study_course_teacher"
+                android:id="@+id/ac_course_teacher_study"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:completionThreshold="1"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <LinearLayout
+            android:id="@+id/linear_notes_study"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_chapter_no_study"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select Chapter"
+                android:layout_marginEnd="8dp"
+                app:errorEnabled="true">
+
+                <AutoCompleteTextView
+                    android:id="@+id/ac_chapter_no_study"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="1"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_lesson_no_study"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:minWidth="150dp"
+                app:endIconMode="clear_text"
+                android:hint="Lesson No"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ac_lesson_no_study"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="8"
+                    android:textAlignment="center"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_lesson_title_study"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:minWidth="150dp"
+                app:endIconMode="clear_text"
+                android:hint="Lesson Title"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ac_lesson_title_study"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="1"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+
         <TextView
-            android:id="@+id/tv_study_fileName"
+            android:id="@+id/tv_fileName_study"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:padding="8dp"
             android:textSize="18sp"
+            android:background="#F1EFEB"
             android:textColorHint="@android:color/holo_red_dark"
             android:hint="No file Selected"
             android:textColor="@android:color/holo_green_dark"
@@ -99,7 +176,7 @@
                 android:visibility="invisible" />
 
             <Button
-                android:id="@+id/btn_study_choose_file"
+                android:id="@+id/btn_choose_file_study"
                 android:layout_width="wrap_content"
                 android:layout_gravity="end"
                 android:layout_height="wrap_content"
@@ -109,12 +186,13 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_study_upload"
+            android:id="@+id/btn_upload_study"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Upload Now"
             android:textAllCaps="false" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

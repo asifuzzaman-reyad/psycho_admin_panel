@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.reyad.psycheadminpanel">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,12 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PsycheAdminPanel">
-        <activity android:name=".main.teacher.ui.main.TeacherInformation"></activity>
+
+        <activity android:name=".main.teacher.ui.main.TeacherInformation" />
         <activity
             android:name=".main.teacher.TeacherDataActivity"
             android:label="@string/title_activity_teacher_data"
             android:theme="@style/Theme.PsycheAdminPanel.NoActionBar" />
-        <activity android:name=".main.teacher.TeacherUpload" />
+
         <activity android:name=".main.student.StudentUpdate" />
         <activity android:name=".main.student.StudentView" />
         <activity android:name=".main.student.StudentActivity" />
@@ -27,6 +30,10 @@
         </activity>
         <activity android:name=".main.StudyActivity" />
         <activity android:name=".main.MainActivity" />
+
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
+
     </application>
 
 </manifest>

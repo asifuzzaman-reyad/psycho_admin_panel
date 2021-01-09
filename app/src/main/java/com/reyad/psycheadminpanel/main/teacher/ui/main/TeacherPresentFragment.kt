@@ -24,7 +24,7 @@ class TeacherPresentFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_teacher_present, container, false)
 
         val dbRef = FirebaseDatabase.getInstance().reference.child("Teacher").child("Present")
-
+        val query = dbRef.orderByChild("serial")
         val arrayList = ArrayList<TeacherItemList>()
 
         dbRef.addValueEventListener(object : ValueEventListener {

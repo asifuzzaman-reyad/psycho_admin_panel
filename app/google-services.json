@@ -1,34 +1,100 @@
 {
   "project_info": {
-    "project_number": "286681896226",
-    "firebase_url": "https://psyche-bb540.firebaseio.com",
-    "project_id": "psyche-bb540",
-    "storage_bucket": "psyche-bb540.appspot.com"
+    "project_number": "386435062628",
+    "firebase_url": "https://psychology-95b39-default-rtdb.firebaseio.com",
+    "project_id": "psychology-95b39",
+    "storage_bucket": "psychology-95b39.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:286681896226:android:7e60b5b58e0985331a417b",
+        "mobilesdk_app_id": "1:386435062628:android:41772816443f3d5c357871",
         "android_client_info": {
-          "package_name": "com.reyad.psycheadminpanel"
+          "package_name": "com.example.myapplication"
         }
       },
       "oauth_client": [
         {
-          "client_id": "286681896226-laejrkhva44vfe74uiju558r2kk58qnu.apps.googleusercontent.com",
+          "client_id": "386435062628-vi8i9dfs784k17qjnttaooo9v62qff43.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myapplication",
+            "certificate_hash": "420ad6a7bc921c05b546ef1992d4b737bae8b2d0"
+          }
+        },
+        {
+          "client_id": "386435062628-pheetlo4i8bqdcc2id08isl498i15ai4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAyF4OP8BA2AHcbvZr0cG6-VDiKjr9pMb4"
+          "current_key": "AIzaSyBcNxGHpF2JvTqxzpqqSEtgOKZDPUseIgU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "286681896226-laejrkhva44vfe74uiju558r2kk58qnu.apps.googleusercontent.com",
+              "client_id": "386435062628-pheetlo4i8bqdcc2id08isl498i15ai4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386435062628:android:513e6cf9ba38450f357871",
+        "android_client_info": {
+          "package_name": "com.reyad.psycheadminpanel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "386435062628-pheetlo4i8bqdcc2id08isl498i15ai4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcNxGHpF2JvTqxzpqqSEtgOKZDPUseIgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "386435062628-pheetlo4i8bqdcc2id08isl498i15ai4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386435062628:android:69187249a418fa2b357871",
+        "android_client_info": {
+          "package_name": "com.reyad.psychology"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "386435062628-pheetlo4i8bqdcc2id08isl498i15ai4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcNxGHpF2JvTqxzpqqSEtgOKZDPUseIgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "386435062628-pheetlo4i8bqdcc2id08isl498i15ai4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
