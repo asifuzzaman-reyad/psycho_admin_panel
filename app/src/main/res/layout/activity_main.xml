@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="32dp"
@@ -57,4 +58,13 @@
         app:layout_constraintEnd_toEndOf="@+id/btn_teacher_home"
         app:layout_constraintStart_toStartOf="@+id/btn_study_home"
         app:layout_constraintTop_toBottomOf="@+id/btn_study_home" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_nested"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="8dp"
+        android:text="Nested"
+        app:layout_constraintEnd_toEndOf="@+id/btn_student_home"
+        app:layout_constraintTop_toBottomOf="@+id/btn_student_home" />
 </androidx.constraintlayout.widget.ConstraintLayout>

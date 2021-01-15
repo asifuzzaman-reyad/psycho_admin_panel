@@ -8,6 +8,7 @@ import com.google.android.material.button.MaterialButton
 import com.reyad.psycheadminpanel.R
 import com.reyad.psycheadminpanel.databinding.ActivityMainBinding
 import com.reyad.psycheadminpanel.main.student.StudentView
+import com.reyad.psycheadminpanel.main.study.StudyActivity2
 import com.reyad.psycheadminpanel.main.teacher.TeacherDataActivity
 
 class MainActivity : AppCompatActivity() {
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var studyBtn: MaterialButton
     private lateinit var studentBtn: MaterialButton
     private lateinit var teacherBtn: MaterialButton
+    private lateinit var nestedBtn: MaterialButton
 
     private lateinit var binding: ActivityMainBinding
 
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         studyBtn = findViewById(R.id.btn_study_home)
         studentBtn = findViewById(R.id.btn_student_home)
         teacherBtn = findViewById(R.id.btn_teacher_home)
+        nestedBtn = findViewById(R.id.btn_nested)
 
         // get batch
         val getBatch = intent.getStringExtra("batch")
@@ -47,6 +50,11 @@ class MainActivity : AppCompatActivity() {
 
         teacherBtn.setOnClickListener {
             val intent = Intent(this, TeacherDataActivity::class.java)
+            startActivity(intent)
+        }
+
+        nestedBtn.setOnClickListener {
+            val intent = Intent(this, StudyActivity2::class.java)
             startActivity(intent)
         }
 

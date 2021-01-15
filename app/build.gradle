@@ -70,6 +70,11 @@ dependencies {
     //
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
 
+    //
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    //
+    implementation 'com.github.d-max:spots-dialog:1.1'
 
 
 }
