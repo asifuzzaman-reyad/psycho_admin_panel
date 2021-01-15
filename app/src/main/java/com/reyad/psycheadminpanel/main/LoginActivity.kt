@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -39,44 +40,47 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
 
             } else {
-//                verifyUserAndPassword(enteredBatch, enteredUser, enteredPassword)
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java)
-                    .apply { putExtra("batch", enteredBatch)})
+                verifyUserEmail(enteredBatch, enteredUser, enteredPassword)
+//                startActivity(Intent(this@LoginActivity, MainActivity::class.java)
+//                    .apply { putExtra("batch", enteredBatch)})
 
             }
 
         }
     }
 
-    private fun verifyUserAndPassword(batch: String, user: String, password: String) {
+    private fun verifyUserEmail(batch: String, user: String, password: String) {
         binding.progressBarLogin.visibility = View.VISIBLE
 
-        val db = FirebaseDatabase.getInstance().getReference("Admin").child(batch)
-        val query = db.child(user)
+        val db = FirebaseDatabase.getInstance().getReference("Admin")
+        val query = db.child(batch)
 
         query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val dbPassword = snapshot.child("password").value.toString()
-                Log.i("login", "user: ${snapshot.key} -> pass: $dbPassword")
+                snapshot.children.forEach { snap ->
+                    val dbUser = snap.child("user").value.toString()
+                    Log.i("login", "user: $dbUser")
 
-                if (dbPassword == password) {
-                    // motion toast
-                    binding.progressBarLogin.visibility = View.GONE
-                    motionToast()
-                    //
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java).apply {
-                        putExtra("batch", batch)
-                    })
-                } else {
-                    binding.progressBarLogin.visibility = View.GONE
-                    Toast.makeText(this@LoginActivity, "not match", Toast.LENGTH_SHORT).show()
+                    if (dbUser == user) {
+                        //
+                        loginWithEmailPassword(user, password, batch)
+
+                    } else {
+                        binding.progressBarLogin.visibility = View.INVISIBLE
+                        Toast.makeText(this@LoginActivity, "User not match", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
                 }
-
             }
 
             override fun onCancelled(error: DatabaseError) {
-                binding.progressBarLogin.visibility = View.GONE
-                Toast.makeText(this@LoginActivity, "login error: ${error.message}", Toast.LENGTH_SHORT).show()
+                binding.progressBarLogin.visibility = View.INVISIBLE
+                Toast.makeText(
+                    this@LoginActivity,
+                    "login error: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
         })
@@ -84,7 +88,44 @@ class LoginActivity : AppCompatActivity() {
     }
 
     //
-    private fun motionToast() {
+    private fun loginWithEmailPassword(email: String, password: String, batch: String) {
+        val auth = FirebaseAuth.getInstance()
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("eLogin", "signInWithEmail:success")
+
+                    //
+                    motionToastSuccess()
+                    binding.progressBarLogin.visibility = View.INVISIBLE
+
+                    //
+                    val mainIntent = Intent(this@LoginActivity, MainActivity::class.java).apply {
+                        putExtra("batch", batch)
+                    }
+                    mainIntent.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(mainIntent)
+
+
+                } else {
+                    // If sign in fails, display a message to the user.
+                    binding.progressBarLogin.visibility = View.INVISIBLE
+                    Log.w("eLogin", "signInWithEmail:failure", task.exception)
+                    Toast.makeText(
+                        this, "Authentication failed.check email or password",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+
+            }
+    }
+
+
+    //
+    private fun motionToastSuccess() {
         MotionToast.createToast(
             this,
             "Hurray success 😍",
