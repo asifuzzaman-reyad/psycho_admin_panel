@@ -17,16 +17,18 @@ class MyItemAdapter(
 ): RecyclerView.Adapter<MyItemAdapter.MyViewHolder>() {
 
     inner class MyViewHolder(view:View): RecyclerView.ViewHolder(view), View.OnClickListener{
-       var txt_title: TextView = view.findViewById(R.id.tvTitle) as TextView
-        var img_item: ImageView = view.findViewById(R.id.itemImage) as ImageView
+       var txt_title: TextView
+       var img_item: ImageView
 
-        lateinit var iItemClickListener: ItemClickListener
+       lateinit var iItemClickListener: ItemClickListener
 
        fun setClick(iItemClickListener: ItemClickListener){
            this.iItemClickListener = iItemClickListener
        }
 
        init {
+           txt_title = view.findViewById(R.id.tvTitle) as TextView
+           img_item = view.findViewById(R.id.itemImage) as ImageView
 
            view.setOnClickListener(this)
        }

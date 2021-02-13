@@ -20,11 +20,7 @@ class StudyActivity2 : AppCompatActivity() {
         setContentView(R.layout.activity_study2)
 
         dialog = SpotsDialog.Builder().setContext(this).build()
-//        myData = FirebaseDatabase.getInstance().getReference("Course").child("MyData")
-        myData = FirebaseDatabase.getInstance().getReference("Study")
-            .child("2nd Year")
-            .child("Psy 201")
-            .child("Notes")
+        myData = FirebaseDatabase.getInstance().getReference("Course").child("MyData")
 
         getFirebaseData()
     }
@@ -32,34 +28,28 @@ class StudyActivity2 : AppCompatActivity() {
     private fun getFirebaseData() {
         dialog.show()
         myData.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshotM: DataSnapshot) {
+            override fun onDataChange(snapshot: DataSnapshot) {
 
-                snapshotM.children.forEach { snapshot ->
+                if (snapshot.exists()) {
+                    val itemGroupA = ArrayList<ItemGroup>()
+                    for (myDataSnapShot in snapshot.children) {
+                        val itemGroup = ItemGroup()
+                        itemGroup.headerTitle =
+                            myDataSnapShot.child("headerTitle").getValue(true).toString()
+                        Log.i("study2", myDataSnapShot.child("headerTitle").value.toString())
+                        val t = object : GenericTypeIndicator<ArrayList<ItemData>>() {}
+                        itemGroup.itemList = myDataSnapShot.child("listItem").getValue(t)
+                        itemGroupA.add(itemGroup)
 
-                    if (snapshot.exists()) {
-                        val itemGroupA = ArrayList<ItemGroup>()
-                        for (myDataSnapShot in snapshot.children) {
-
-                            val itemGroup = ItemGroup()
-                            itemGroup.headerTitle =
-                                myDataSnapShot.child("chapter").getValue(true).toString()
-                            Log.i("study2", myDataSnapShot.child("chapter").value.toString())
-
-//                            val itemData = object : GenericTypeIndicator<ArrayList<ItemData>>() {}
-//                            itemGroup.itemList = myDataSnapShot.child("listItem").getValue(itemData)
-                            itemGroupA.add(itemGroup)
-
-                            val adapter = MyGroupAdapter(this@StudyActivity2, itemGroupA)
-                            findViewById<RecyclerView>(R.id.recycler_view_study2).adapter = adapter
-                            dialog.dismiss()
-                        }
-                    } else {
-                        Toast.makeText(this@StudyActivity2, "not yet uploaded", Toast.LENGTH_LONG)
-                            .show()
+                        val adapter = MyGroupAdapter(this@StudyActivity2, itemGroupA)
+                        findViewById<RecyclerView>(R.id.recycler_view_study2).adapter = adapter
                         dialog.dismiss()
                     }
-
+                } else {
+                    Toast.makeText(this@StudyActivity2, "not yet uploaded", Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
                 }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -68,6 +58,5 @@ class StudyActivity2 : AppCompatActivity() {
             }
         })
     }
-
 
 }

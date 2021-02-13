@@ -17,9 +17,13 @@ class MyGroupAdapter(
 
     //
     inner class MyViewHolder(view: View): RecyclerView.ViewHolder(view){
-        var itemTitle: TextView = view.findViewById(R.id.itemTitle) as TextView
-        var recyclerView: RecyclerView = view.findViewById(R.id.recycler_view_list) as RecyclerView
+        var itemTitle: TextView
+        var recyclerView: RecyclerView
 
+        init {
+            itemTitle = view.findViewById(R.id.itemTitle) as TextView
+            recyclerView = view.findViewById(R.id.recycler_view_list) as RecyclerView
+        }
     }
 
     //
